@@ -1,9 +1,24 @@
+"use client";
+
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
+  const router = useRouter();
+
   return (
     <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
       <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
+        <div className="flex flex-col gap-4">
+          <button className="surface-form-button">Open Form</button>
+          <button
+            onClick={() => router.push("/form")}
+            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition-colors"
+          >
+            Go to Form
+          </button>
+        </div>
+
         <Image
           className="dark:invert"
           src="/next.svg"
@@ -12,6 +27,7 @@ export default function Home() {
           height={38}
           priority
         />
+
         <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
           <li className="mb-2 tracking-[-.01em]">
             Get started by editing{" "}
@@ -51,6 +67,7 @@ export default function Home() {
           </a>
         </div>
       </main>
+
       <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
         <a
           className="flex items-center gap-2 hover:underline hover:underline-offset-4"

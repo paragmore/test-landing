@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import Script from "next/script";
+import SurfaceFormScript from "./SurfaceFormScript";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -24,10 +26,23 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <Script
+          src="/surface_tag.js"
+          data-site-id="cm5e6essv0002l603lv3eeqtw" // Replace this with your Site ID
+          strategy="beforeInteractive"
+        />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         {children}
+        <SurfaceFormScript
+          formUrl="https://surfaceforms-git-landing-page-url-based-lead-analytics-surface.vercel.app/s/cmgtki5cp0001ic0bc9gd83gv" // Replace this with a Surface Form URL
+          embedType="popup"
+          popupSize="medium" // "small", "medium", "large"
+          buttonClassName="surface-form-button"
+        />
       </body>
     </html>
   );
