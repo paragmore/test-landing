@@ -1,10 +1,6 @@
 let SurfaceUsBrowserSpeedInitialized = false;
 let SurfaceDelivrPixelInitialized = false;
 let SurfaceSharedSessionId = null;
-let SurfaceLeadData = {
-  leadId: null,
-  leadSessionId: null,
-};
 
 async function getHash(input) {
   const encoder = new TextEncoder();
@@ -28,8 +24,8 @@ const getBrowserFingerprint = async (environmentId) => {
 
   // Screen Properties
   fingerprint.screen = {
-    width: 13423303335734975,
-    height: 93053498530390997097,
+    width: screen.width,
+    height: screen.height,
     colorDepth: screen.colorDepth,
   };
 
@@ -257,10 +253,7 @@ function SurfaceSendToFiveByFive(payload) {
   const endpoint = new URL("https://a.usbrowserspeed.com/cs");
   var pid = "b3752b5f7f17d773b265c2847b23ffa444cac7db2af8a040c341973a6704a819";
   endpoint.searchParams.append("pid", pid);
-
   endpoint.searchParams.append("puid", JSON.stringify(payload));
-
-  console.log("endpoint", JSON.stringify(payload));
 
   fetch(endpoint.href, {
     mode: "no-cors",
@@ -281,8 +274,7 @@ async function SurfaceSyncCookie(payload) {
   if (SurfaceUsBrowserSpeedInitialized == false) {
     // Call identify first to get lead data
     const leadData = await SurfaceIdentifyLead(payload.environmentId);
-
-    console.log("leadDataleadData", leadData);
+    SurfaceTagStore.sendPayloadToIframes("LEAD_DATA_UPDATE")
 
     // Send to usbrowserspeed with lead data
     SurfaceSendToFiveByFive({
@@ -608,8 +600,6 @@ class SurfaceStore {
       "https://forms.withsurface.com",
       "https://app.withsurface.com",
       "https://dev.withsurface.com",
-      "http://localhost:3000",
-      "https://surfaceforms-git-landing-page-url-based-lead-analytics-surface.vercel.app"
     ];
 
     this._initializeMessageListener();
@@ -622,7 +612,7 @@ class SurfaceStore {
       }
 
       if (event.data.type === "SEND_DATA") {
-        this._sendPayloadToIframes();
+        this.sendPayloadToIframes(event.data.type);
       }
     };
 
@@ -639,7 +629,7 @@ class SurfaceStore {
     }
   };
 
-  _sendPayloadToIframes = () => {
+  sendPayloadToIframes = (type = "STORE_UPDATE") => {
     const iframes = document.querySelectorAll("iframe");
 
     if (iframes.length === 0) {
@@ -654,7 +644,7 @@ class SurfaceStore {
     }
 
     iframes.forEach((iframe) => {
-      this.notifyIframe(iframe);
+      this.notifyIframe(iframe, type);
     });
   };
 
@@ -669,14 +659,14 @@ class SurfaceStore {
     return params;
   }
 
-  notifyIframe(iframe = null) {
+  notifyIframe(iframe = null, type = "STORE_UPDATE") {
     const surfaceIframe = iframe || document.querySelector("#surface-iframe");
     if (surfaceIframe) {
       this.surfaceDomains.forEach((domain) => {
         if (surfaceIframe.src.includes(domain)) {
           surfaceIframe.contentWindow.postMessage(
             {
-              type: "STORE_UPDATE",
+              type,
               payload: this.getPayload(),
             },
             domain
