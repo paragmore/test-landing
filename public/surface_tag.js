@@ -600,6 +600,7 @@ class SurfaceStore {
       "https://forms.withsurface.com",
       "https://app.withsurface.com",
       "https://dev.withsurface.com",
+      "https://surfaceforms-git-landing-page-url-based-lead-analytics-surface.vercel.app"
     ];
 
     this._initializeMessageListener();
