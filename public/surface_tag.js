@@ -1,6 +1,8 @@
 let SurfaceUsBrowserSpeedInitialized = false;
 let SurfaceDelivrPixelInitialized = false;
 let SurfaceSharedSessionId = null;
+let EnvironmentId = null;
+let LeadIdentifyInProgress = null;
 
 async function getHash(input) {
   const encoder = new TextEncoder();
@@ -185,6 +187,7 @@ function SurfaceGetLeadDataWithTTL() {
       leadId: item?.leadId,
       leadSessionId: item?.leadSessionId,
       fingerprint: item?.fingerprint,
+      expiry: item.expiry,
     };
   } catch (error) {
     console.error("Error parsing lead data from localStorage:", error);
@@ -194,13 +197,52 @@ function SurfaceGetLeadDataWithTTL() {
 
 // Identify function to get lead information
 async function SurfaceIdentifyLead(environmentId) {
+  // If a call is already in progress, wait for it to complete
+  if (LeadIdentifyInProgress) {
+    // Poll for cached data with timeout
+    const maxWaitTime = 5000; // 5 seconds max wait
+    const pollInterval = 100; // Check every 100ms
+    const startTime = Date.now();
+
+    while (LeadIdentifyInProgress && Date.now() - startTime < maxWaitTime) {
+      await new Promise((resolve) => setTimeout(resolve, pollInterval));
+
+      // Check if data is now available in cache
+      const cachedData = SurfaceGetLeadDataWithTTL();
+      if (cachedData && cachedData.leadSessionId && cachedData.fingerprint) {
+        return {
+          leadId: cachedData.leadId,
+          leadSessionId: cachedData.leadSessionId,
+          fingerprint: cachedData.fingerprint,
+        };
+      }
+    }
+  }
+
   // Check if we have valid cached data first
   const cachedData = SurfaceGetLeadDataWithTTL();
+  const now = new Date().getTime();
 
+  if (
+    cachedData &&
+    cachedData.leadSessionId &&
+    cachedData.fingerprint &&
+    now < cachedData.expiry
+  ) {
+    return {
+      leadId: cachedData.leadId,
+      leadSessionId: cachedData.leadSessionId,
+      fingerprint: cachedData.fingerprint,
+    };
+  }
+
+  // Set flag before making API call
+  LeadIdentifyInProgress = true;
+
+  const fingerprint = await getBrowserFingerprint(environmentId);
   const apiUrl =
     "https://surfaceforms-git-landing-page-url-based-lead-analytics-surface.vercel.app/api/v1/lead/identify";
   const parentUrl = new URL(window.location.href);
-  const fingerprint = await getBrowserFingerprint(environmentId);
 
   const payload = {
     fingerprint: fingerprint.id,
@@ -244,8 +286,13 @@ async function SurfaceIdentifyLead(environmentId) {
     }
   } catch (error) {
     console.error("Error identifying lead:", error);
+  } finally {
+    // IMPORTANT: Reset flag after API call completes
+    LeadIdentifyInProgress = false;
   }
 
+  // Reset flag on failure too
+  LeadIdentifyInProgress = false;
   return null;
 }
 
@@ -603,6 +650,7 @@ class SurfaceStore {
       "https://app.withsurface.com",
       "https://dev.withsurface.com",
       "https://surfaceforms-git-landing-page-url-based-lead-analytics-surface.vercel.app",
+      "http://localhost:3000",
     ];
 
     this._initializeMessageListener();
@@ -616,11 +664,11 @@ class SurfaceStore {
       }
 
       if (event.data.type === "SEND_DATA") {
+        console.log("askhjfbalsfbkhaslhf");
         this.sendPayloadToIframes(event.data.type);
-        const scriptTag = document.currentScript;
-        const environmentId = SurfaceGetSiteIdFromScript(scriptTag);
-        if (environmentId) {
-          SurfaceIdentifyLead(environmentId)
+        console.log("EVENYaskdja");
+        if (EnvironmentId) {
+          SurfaceIdentifyLead(EnvironmentId)
             .then(() => {
               console.log("UPDATE LEAD DATA");
               this.sendPayloadToIframes("LEAD_DATA_UPDATE");
@@ -1694,6 +1742,7 @@ class SurfaceEmbed {
 (function () {
   const scriptTag = document.currentScript;
   const environmentId = SurfaceGetSiteIdFromScript(scriptTag);
+  EnvironmentId = environmentId;
 
   if (environmentId != null) {
     const syncCookiePayload = {
