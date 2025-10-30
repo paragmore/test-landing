@@ -274,6 +274,7 @@ async function SurfaceSyncCookie(payload) {
   if (SurfaceUsBrowserSpeedInitialized == false) {
     // Call identify first to get lead data
     const leadData = await SurfaceIdentifyLead(payload.environmentId);
+    console.log("LeADDATA", leadData)
     SurfaceTagStore.sendPayloadToIframes("LEAD_DATA_UPDATE");
 
     // Send to usbrowserspeed with lead data
@@ -632,6 +633,7 @@ class SurfaceStore {
   };
 
   sendPayloadToIframes = (type = "STORE_UPDATE") => {
+    console.log("sendPayloadToIframes", type)
     const iframes = document.querySelectorAll("iframe");
 
     if (iframes.length === 0) {
@@ -664,6 +666,7 @@ class SurfaceStore {
   notifyIframe(iframe = null, type = "STORE_UPDATE") {
     const surfaceIframe = iframe || document.querySelector("#surface-iframe");
     if (surfaceIframe) {
+      console.log("surfaceIframe.src", surfaceIframe.src)
       this.surfaceDomains.forEach((domain) => {
         if (surfaceIframe.src.includes(domain)) {
           surfaceIframe.contentWindow.postMessage(
