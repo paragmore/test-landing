@@ -197,7 +197,8 @@ async function SurfaceIdentifyLead(environmentId) {
   // Check if we have valid cached data first
   const cachedData = SurfaceGetLeadDataWithTTL();
 
-  const apiUrl = "https://surfaceforms-git-landing-page-url-based-lead-analytics-surface.vercel.app/api/v1/lead/identify";
+  const apiUrl =
+    "https://surfaceforms-git-landing-page-url-based-lead-analytics-surface.vercel.app/api/v1/lead/identify";
   const parentUrl = new URL(window.location.href);
   const fingerprint = await getBrowserFingerprint(environmentId);
 
@@ -274,7 +275,7 @@ async function SurfaceSyncCookie(payload) {
   if (SurfaceUsBrowserSpeedInitialized == false) {
     // Call identify first to get lead data
     const leadData = await SurfaceIdentifyLead(payload.environmentId);
-    console.log("LeADDATA", leadData)
+    console.log("LeADDATA", leadData);
     SurfaceTagStore.sendPayloadToIframes("LEAD_DATA_UPDATE");
 
     // Send to usbrowserspeed with lead data
@@ -601,7 +602,7 @@ class SurfaceStore {
       "https://forms.withsurface.com",
       "https://app.withsurface.com",
       "https://dev.withsurface.com",
-      "https://surfaceforms-git-landing-page-url-based-lead-analytics-surface.vercel.app"
+      "https://surfaceforms-git-landing-page-url-based-lead-analytics-surface.vercel.app",
     ];
 
     this._initializeMessageListener();
@@ -609,13 +610,16 @@ class SurfaceStore {
 
   _initializeMessageListener = () => {
     const handleMessage = (event) => {
-      console.log("event.origin", event.origin, event)
+      console.log("event.origin", event.origin, event);
       if (!event.origin || !this.surfaceDomains.includes(event.origin)) {
         return;
       }
 
       if (event.data.type === "SEND_DATA") {
         this.sendPayloadToIframes(event.data.type);
+        SurfaceIdentifyLead(payload.environmentId).then(() => {
+          SurfaceTagStore.sendPayloadToIframes("LEAD_DATA_UPDATE");
+        });
       }
     };
 
@@ -633,7 +637,7 @@ class SurfaceStore {
   };
 
   sendPayloadToIframes = (type = "STORE_UPDATE") => {
-    console.log("sendPayloadToIframes", type)
+    console.log("sendPayloadToIframes", type);
     const iframes = document.querySelectorAll("iframe");
 
     if (iframes.length === 0) {
@@ -666,7 +670,7 @@ class SurfaceStore {
   notifyIframe(iframe = null, type = "STORE_UPDATE") {
     const surfaceIframe = iframe || document.querySelector("#surface-iframe");
     if (surfaceIframe) {
-      console.log("surfaceIframe.src", surfaceIframe.src)
+      console.log("surfaceIframe.src", surfaceIframe.src);
       this.surfaceDomains.forEach((domain) => {
         if (surfaceIframe.src.includes(domain)) {
           surfaceIframe.contentWindow.postMessage(
@@ -896,7 +900,7 @@ class SurfaceEmbed {
         "." + this.target_element_class
       );
       if (clickedButton) {
-        console.log("this.initialized", this.initialized)
+        console.log("this.initialized", this.initialized);
         if (!this.initialized) {
           this.initializeEmbed();
           this.shouldShowSurfaceForm();
