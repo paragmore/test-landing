@@ -274,7 +274,7 @@ async function SurfaceSyncCookie(payload) {
   if (SurfaceUsBrowserSpeedInitialized == false) {
     // Call identify first to get lead data
     const leadData = await SurfaceIdentifyLead(payload.environmentId);
-    SurfaceTagStore.sendPayloadToIframes("LEAD_DATA_UPDATE")
+    SurfaceTagStore.sendPayloadToIframes("LEAD_DATA_UPDATE");
 
     // Send to usbrowserspeed with lead data
     SurfaceSendToFiveByFive({
@@ -669,6 +669,7 @@ class SurfaceStore {
             {
               type,
               payload: this.getPayload(),
+              sender: "surface_tag",
             },
             domain
           );
@@ -891,6 +892,7 @@ class SurfaceEmbed {
         "." + this.target_element_class
       );
       if (clickedButton) {
+        console.log("this.initialized", this.initialized)
         if (!this.initialized) {
           this.initializeEmbed();
           this.shouldShowSurfaceForm();

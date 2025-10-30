@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef } from "react";
 
 interface SurfaceEmbedInstance {
   popupSize?: "small" | "medium" | "large";
-  embedSurfaceForm(): void;
+  initializeEmbed(): void;
   showSurfaceForm(): void;
 }
 
@@ -50,7 +50,7 @@ export default function SurfaceFormScript({
       );
 
       surfaceInstance.popupSize = popupSize;
-      surfaceInstance.embedSurfaceForm();
+      surfaceInstance.initializeEmbed();
 
       instanceRef.current = surfaceInstance;
       isInitializedRef.current = true;
