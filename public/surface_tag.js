@@ -617,10 +617,14 @@ class SurfaceStore {
 
       if (event.data.type === "SEND_DATA") {
         this.sendPayloadToIframes(event.data.type);
-        SurfaceIdentifyLead(payload.environmentId).then(() => {
-          console.log("UPDATE LEAD DATA")
-          this.sendPayloadToIframes("LEAD_DATA_UPDATE");
-        });
+        const scriptTag = document.currentScript;
+        const environmentId = SurfaceGetSiteIdFromScript(scriptTag);
+        if (environmentId) {
+          SurfaceIdentifyLead(environmentId).then(() => {
+            console.log("UPDATE LEAD DATA");
+            this.sendPayloadToIframes("LEAD_DATA_UPDATE");
+          });
+        }
       }
     };
 
