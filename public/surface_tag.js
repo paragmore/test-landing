@@ -620,10 +620,12 @@ class SurfaceStore {
         const scriptTag = document.currentScript;
         const environmentId = SurfaceGetSiteIdFromScript(scriptTag);
         if (environmentId) {
-          SurfaceIdentifyLead(environmentId).then(() => {
-            console.log("UPDATE LEAD DATA");
-            this.sendPayloadToIframes("LEAD_DATA_UPDATE");
-          });
+          SurfaceIdentifyLead(environmentId)
+            .then(() => {
+              console.log("UPDATE LEAD DATA");
+              this.sendPayloadToIframes("LEAD_DATA_UPDATE");
+            })
+            .catch((e) => console.log("Failed identify", e));
         }
       }
     };
