@@ -618,7 +618,8 @@ class SurfaceStore {
       if (event.data.type === "SEND_DATA") {
         this.sendPayloadToIframes(event.data.type);
         SurfaceIdentifyLead(payload.environmentId).then(() => {
-          SurfaceTagStore.sendPayloadToIframes("LEAD_DATA_UPDATE");
+          console.log("UPDATE LEAD DATA")
+          this.sendPayloadToIframes("LEAD_DATA_UPDATE");
         });
       }
     };
