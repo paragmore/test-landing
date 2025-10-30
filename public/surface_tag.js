@@ -608,6 +608,7 @@ class SurfaceStore {
 
   _initializeMessageListener = () => {
     const handleMessage = (event) => {
+      console.log("event.origin", event.origin, event)
       if (!event.origin || !this.surfaceDomains.includes(event.origin)) {
         return;
       }
