@@ -38,7 +38,7 @@ export default function RootLayout({
       >
         {children}
         <SurfaceFormScript
-          formUrl="https://surfaceforms-git-landing-page-url-based-lead-analytics-surface.vercel.app/s/cmgtki5cp0001ic0bc9gd83gv" // Replace this with a Surface Form URL
+          formUrl="https://forms.withsurface.com/s/cmgs74lk1000jl10bgmppuva1" // Replace this with a Surface Form URL
           embedType="popup"
           popupSize="medium" // "small", "medium", "large"
           buttonClassName="surface-form-button"

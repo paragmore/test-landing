@@ -240,8 +240,7 @@ async function SurfaceIdentifyLead(environmentId) {
   LeadIdentifyInProgress = true;
 
   const fingerprint = await getBrowserFingerprint(environmentId);
-  const apiUrl =
-    "https://surfaceforms-git-landing-page-url-based-lead-analytics-surface.vercel.app/api/v1/lead/identify";
+  const apiUrl = "https://forms.withsurface.com/api/v1/lead/identify";
   const parentUrl = new URL(window.location.href);
 
   const payload = {
