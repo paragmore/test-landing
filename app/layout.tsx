@@ -28,8 +28,8 @@ export default function RootLayout({
     <html lang="en">
       <head>
         <Script
-          src="/surface_tag.js"
-          data-site-id="cm5e6essv0002l603lv3eeqtw" // Replace this with your Site ID
+          src="https://cdn.jsdelivr.net/gh/trysurface/scripts@latest/surface_tag.min.js"
+          data-site-id="cllo318mt0003mb08hnp0f5zy" // Replace this with your Site ID
           strategy="beforeInteractive"
         />
       </head>
