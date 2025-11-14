@@ -19,6 +19,14 @@ export default function Home() {
           </button>
         </div>
 
+        <iframe
+          src="https://surfaceforms-git-feat-turnstile-component-surface.vercel.app/s/cmhkfx6zx0001jp0b8a7u7mxw"
+          allowFullScreen
+          width={1200}
+          height={900}
+          loading="eager"
+        ></iframe>
+
         <Image
           className="dark:invert"
           src="/next.svg"
