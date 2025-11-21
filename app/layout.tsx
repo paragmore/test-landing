@@ -27,17 +27,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <Script
-          src="https://cdn.jsdelivr.net/gh/trysurface/scripts@latest/surface_tag.min.js"
-          strategy="beforeInteractive"
-        />
+        <Script src="/surface_tag.js" strategy="beforeInteractive" />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         {children}
         <SurfaceFormScript
-          formUrl="https://surfaceforms-git-feat-turnstile-component-surface.vercel.app/s/cmhkfx6zx0001jp0b8a7u7mxw" // Replace this with a Surface Form URL
+          formUrl="https://dev.withsurface.com/s/cmi4bpjy40001kz0b96vku8fk" // Replace this with a Surface Form URL
           embedType="popup"
           popupSize="medium" // "small", "medium", "large"
           buttonClassName="surface-form-button"
